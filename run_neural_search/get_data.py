@@ -18,7 +18,7 @@ def filter_good_rows(
     Some CSVs may have different number of fields per row, which really messes up doc.tags. We'll remove these malformed rows
     """
     good_list = []
-    wtflist = []
+    malformed_list = []
 
     # Get fields
     with open(input_file, "r") as file:
@@ -38,15 +38,16 @@ def filter_good_rows(
                 good_list.append(row)
                 writer.writerow(row)
             else:
-                wtflist.append(row)
+                malformed_list.append(row)
 
     print(f"GOOD: {len(good_list)} rows with {desired_field_count} keys")
-    print(f"BAD: {len(wtflist)} rows with weird number of keys")
+    print(f"BAD: {len(malformed_list)} rows with weird number of keys")
 
+print(os.environ["HOME"])
 
-if not os.path.isfile(f"{os.path.expanduser('~')}/.kaggle/kaggle.json"):
+if not os.path.isfile(f"{os.path.expanduser('~')}/kaggle/kaggle.json"):
     print(
-        "1. Please create a Kaggle account to download the dataset: https://www.kaggle.com/ \n2. Ensure ~/.kaggle/kaggle.json exists"
+        " Please create a Kaggle account to download the dataset: https://www.kaggle.com/ \n2. Ensure ~/.kaggle/kaggle.json exists"
     )
     sys.exit()
 
