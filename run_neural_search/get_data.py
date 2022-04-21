@@ -43,7 +43,6 @@ def filter_good_rows(
     print(f"GOOD: {len(good_list)} rows with {desired_field_count} keys")
     print(f"BAD: {len(malformed_list)} rows with weird number of keys")
 
-print(os.environ["HOME"])
 
 if not os.path.isfile(f"{os.path.expanduser('~')}/kaggle/kaggle.json"):
     print(
