@@ -5,9 +5,7 @@ from zipfile import ZipFile
 import shutil
 import csv
 
-data_dir = "../data"
-dataset_name = "paramaggarwal/fashion-product-images-small"
-filename = "fashion-product-images-small.zip"
+data_dir = "../data/fashion_product_images_small"
 csv_filename = "styles.csv"
 
 
@@ -43,31 +41,12 @@ def filter_good_rows(
     print(f"GOOD: {len(good_list)} rows with {desired_field_count} keys")
     print(f"BAD: {len(malformed_list)} rows with weird number of keys")
 
-
-if not os.path.isfile(f"{os.path.expanduser('~')}/kaggle/kaggle.json"):
-    print(
-        " Please create a Kaggle account to download the dataset: https://www.kaggle.com/ \n2. Ensure ~/.kaggle/kaggle.json exists"
-    )
-    sys.exit()
-
 if not os.path.isdir(data_dir):
     os.mkdir(data_dir)
 
 os.chdir(data_dir)
 
-if not os.path.isdir("images"):
-    print("- Downloading dataset")
-    subprocess.run(["kaggle", "datasets", "download", dataset_name])
-
-    print("- Unzipping dataset")
-    with ZipFile(filename, "r") as zipfile:
-        zipfile.extractall(".")
-
-    print("- Deleting unused files to free up space")
-    shutil.rmtree("myntradataset")
-
-    print("- Deleting zip file")
-    os.remove(filename)
+print(os.getcwd())
 
 print("- Removing malformed rows")
 filter_good_rows()
