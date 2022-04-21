@@ -3,7 +3,7 @@ from config import DATA_DIR, CSV_FILE
 import random
 import os
 
-def generate_price(minimum=10, maximum=200):
+def generate_price(minimum=4.95, maximum=499.99):
     price = random.randrange(minimum, maximum)
 
     return price
@@ -35,30 +35,6 @@ def process_doc(doc):
 def csv_to_docarray(file_path=CSV_FILE, max_docs=100):
     docs = DocumentArray.from_csv(file_path, size=max_docs)
     docs.apply(process_doc)
-
-    return docs
-
-
-# Deprecated
-def input_docs_from_csv(file_path=CSV_FILE, max_docs=100, data_dir=DATA_DIR):
-    docs = DocumentArray()
-    import csv
-    from itertools import islice
-
-    with open(file_path, "r") as file:
-        reader = csv.DictReader(file)
-
-        for row in islice(reader, max_docs):
-            filename = f"{data_dir}/{row['id']}.jpg"
-            doc = Document(uri=filename, tags=row)
-            random.seed(int(doc.tags["id"]))  # Ensure reproducability
-
-            # Generate useful data that's missing
-            doc.tags["price"] = generate_price()  # Generate fake price
-            doc.tags["rating"] = random.randrange(0, 5)
-
-            doc.load_uri_to_image_tensor()
-            docs.append(doc)
 
     return docs
 
