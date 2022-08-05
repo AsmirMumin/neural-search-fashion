@@ -1,15 +1,10 @@
-from config import (
-    SERVER,
-    PORT,
-    TOP_K,
-)
+from config import SERVER, TOP_K
 from jina import Client, Document
 
 
-def get_matches(
-    input, server=SERVER, port=PORT, limit=TOP_K, filters=None
-):
-    client = Client(host=server, protocol="http", port=port)
+def get_matches(input, server=SERVER, limit=TOP_K, filters=None):
+    print(f"Server: {server}")
+    client = Client(host=server)
     response = client.search(
         Document(text=input),
         return_results=True,
@@ -20,15 +15,11 @@ def get_matches(
     return response[0].matches
 
 
-def get_matches_from_image(
-    input, server=SERVER, port=PORT, limit=TOP_K, filters=None
-):
+def get_matches_from_image(input, server=SERVER, limit=TOP_K, filters=None):
     data = input.read()
     query_doc = Document(blob=data)
-    query_doc.convert_blob_to_image_tensor()
-    query_doc.set_image_tensor_shape((80, 60))
 
-    client = Client(host=server, protocol="http", port=port)
+    client = Client(host=server)
     response = client.search(
         query_doc,
         return_results=True,
@@ -111,7 +102,7 @@ class facets:
         "White",
         "Yellow",
     ]
-    usage = [
+    style = [
         "",
         "Casual",
         "Ethnic",
@@ -123,7 +114,7 @@ class facets:
         "Sports",
         "Travel",
     ]
-    masterCategory = [
+    category = [
         "Accessories",
         "Apparel",
         "Footwear",

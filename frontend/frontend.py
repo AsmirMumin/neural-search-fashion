@@ -1,17 +1,15 @@
 import streamlit as st
+
 from helper import (
     get_matches,
-    resize_image,
     print_stars,
     get_matches_from_image,
     facets,
 )
 from config import (
     TOP_K,
-    IMAGE_RESIZE_FACTOR,
     SERVER,
-    PORT,
-    DEBUG,
+    DEBUG
 )
 
 filters = {
@@ -19,9 +17,9 @@ filters = {
         "price": {},
         "rating": {},
         "season": {},
-        "masterCategory": {},
+        "category": {},
         "gender": {},
-        "baseColour": {},
+        "baseColor": {},
         # "year": {},
     }
 }
@@ -33,11 +31,11 @@ st.set_page_config(page_title=title, layout="wide")
 # Sidebar
 st.sidebar.title("Options")
 
-input_media = st.sidebar.radio(label="Search with...", options=["text", "image"])
+input_media = st.sidebar.radio(label="Search using...", options=["text", "image"])
 
 
-filters["$and"]["masterCategory"]["$in"] = st.sidebar.multiselect(
-    "Category", facets.masterCategory, default=facets.masterCategory
+filters["$and"]["category"]["$in"] = st.sidebar.multiselect(
+    "Category", facets.category, default=facets.category
 )
 
 filters["$and"]["gender"]["$in"] = st.sidebar.multiselect(
@@ -58,7 +56,7 @@ limit = st.sidebar.slider(
     max_value=TOP_K * 3,
     value=TOP_K,
 )
-filters["$and"]["baseColour"]["$in"] = st.sidebar.multiselect(
+filters["$and"]["baseColor"]["$in"] = st.sidebar.multiselect(
     "Color", facets.color, default=facets.color
 )
 # (
@@ -70,14 +68,8 @@ filters["$and"]["baseColour"]["$in"] = st.sidebar.multiselect(
 if DEBUG:
     with st.sidebar.expander("Debug"):
         server = st.text_input(label="Server", value=SERVER)
-        port = st.text_input(label="Port", value=PORT)
-        # text_server = st.text_input(label="Text server", value=SERVER)
-        # text_port = st.text_input(label="Text port", value=PORT)
-        # image_server = st.text_input(label="Image server", value=SERVER)
-        # image_port = st.text_input(label="Image port", value=PORT)
 else:
     server = SERVER
-    port = PORT
 
 st.sidebar.title("About")
 
@@ -107,9 +99,7 @@ if input_media == "text":
             limit=limit,
             filters=filters,
             server=server,
-            port=port,
         )
-        print(matches)
 
 elif input_media == "image":
     image_query = st.file_uploader(label="Image file")
@@ -120,16 +110,12 @@ elif input_media == "image":
             limit=limit,
             filters=filters,
             server=server,
-            port=port,
         )
 
 if "matches" in locals():
     for match in matches:
         pic_cell, desc_cell, price_cell = st.columns([1, 6, 1])
-
-        image = resize_image(match.uri, resize_factor=IMAGE_RESIZE_FACTOR)
-
-        pic_cell.image(image, use_column_width="auto")
+        pic_cell.image(match.tags["image_url"])
         desc_cell.markdown(
             f"##### {match.tags['productDisplayName']} {print_stars(match.tags['rating'])}"
         )
